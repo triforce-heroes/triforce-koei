@@ -1,0 +1,1 @@
+export function validate(t){if(t.length<=20)return!1;let e=t.readUInt32LE(0),n=t.readUInt32LE(4);if(0===e||0===n||e===n)return!1;let r=t.readUInt32LE(16);return t.length-n-16===r}

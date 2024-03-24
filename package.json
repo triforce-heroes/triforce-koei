@@ -1,0 +1,33 @@
+{
+  "name": "@triforce-heroes/triforce-koei",
+  "description": "Transpile and rebuild KOEI files.",
+  "version": "1.0.0",
+  "license": "Apache License 2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rimraf ./dist && tsc -p ./tsconfig.build.json && swc ./dist -d .",
+    "prettier": "prettier --check ./src",
+    "prettier:fix": "prettier --write ./src",
+    "eslint": "eslint ./src",
+    "eslint:fix": "eslint --fix ./src",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage"
+  },
+  "devDependencies": {
+    "@rheactor/eslint-config-rheactor": "github:rheactor/eslint-config-rheactor",
+    "@swc/cli": "^0.3.10",
+    "@swc/core": "^1.4.8",
+    "@triforce-heroes/triforce-core": "github:triforce-heroes/triforce-core",
+    "@types/node": "^20.11.30",
+    "@vitest/coverage-v8": "^1.4.0",
+    "rimraf": "^5.0.5",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.3",
+    "vitest": "^1.4.0"
+  }
+}
