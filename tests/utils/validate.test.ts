@@ -14,6 +14,7 @@ describe("utils/validate", () => {
     ["sample-hello.koei", true],
     ["sample-ola.koei", true],
     ["sample-attributes.koei", true],
+    ["sample-empty.koei", true],
   ];
 
   it.each(samples)("validate(%j)", (file, expected) => {

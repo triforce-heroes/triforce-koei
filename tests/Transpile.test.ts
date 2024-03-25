@@ -18,6 +18,7 @@ describe("transpile", () => {
         ["Hello", Buffer.from("BBBB", "binary")],
       ],
     ],
+    ["sample-empty.koei", [[""]]],
   ] as const;
 
   it.each(samples)("transpile(%j)", (file, expected) => {

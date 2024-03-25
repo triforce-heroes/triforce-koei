@@ -6,7 +6,7 @@ export function validate(buffer: Buffer) {
   const entriesCount = buffer.readUInt32LE(0);
   const dataSize = buffer.readUInt32LE(4);
 
-  if (entriesCount === 0 || dataSize === 0 || entriesCount === dataSize) {
+  if (entriesCount === 0 || dataSize === 0) {
     return false;
   }
 

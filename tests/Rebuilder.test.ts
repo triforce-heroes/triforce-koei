@@ -18,6 +18,7 @@ describe("rebuild", () => {
       ],
       "sample-attributes.koei",
     ],
+    [[[""]], "sample-empty.koei"],
   ] as const;
 
   it.each(samples)("rebuild(%j)", (entries, expected) => {
