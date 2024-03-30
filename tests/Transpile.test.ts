@@ -19,6 +19,7 @@ describe("transpile", () => {
       ],
     ],
     ["sample-empty.koei", [[""]]],
+    ["sample-unreliable.koei", [[""], ["A"], ["BB"], ["CCC"], ["!"]]],
   ] as const;
 
   it.each(samples)("transpile(%j)", (file, expected) => {

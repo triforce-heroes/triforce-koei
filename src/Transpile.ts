@@ -2,34 +2,33 @@ import { BufferConsumer } from "@triforce-heroes/triforce-core/BufferConsumer";
 
 import { Entry } from "./types/Entry.js";
 
-export function transpile(buffer: Buffer) {
-  const consumer = new BufferConsumer(buffer);
-
-  const entries: Entry[] = [];
-  const entriesCount = consumer.readUnsignedInt32();
+export function transpile(buffer: Buffer): Entry[] {
+  const consumer = new BufferConsumer(buffer, 4);
 
   const dataSize = consumer.readUnsignedInt32();
-  const offsetSize = consumer.skip(8).readUnsignedInt32() / entriesCount;
+  const dataEntries: string[] = [];
 
   consumer.seek(buffer.length - dataSize);
 
-  if (offsetSize === 4) {
-    for (let i = 0; i < entriesCount; i++) {
-      entries.push([consumer.readNullTerminatedString()]);
-    }
-  } else {
-    const offsetConsumer = new BufferConsumer(
-      buffer.subarray(16, 16 + entriesCount * offsetSize),
-    );
+  while (!consumer.isConsumed()) {
+    dataEntries.push(consumer.readNullTerminatedString());
+  }
 
-    for (let i = 0; i < entriesCount; i++) {
-      offsetConsumer.skip(4);
+  const attributesSize =
+    (buffer.length - dataSize - 16) / dataEntries.length - 4;
 
-      entries.push([
-        consumer.readNullTerminatedString(),
-        offsetConsumer.read(offsetSize - 4),
-      ]);
-    }
+  if (attributesSize === 0) {
+    return dataEntries.map((entry) => [entry]);
+  }
+
+  consumer.seek(16);
+
+  const entries: Entry[] = [];
+
+  for (const dataEntry of dataEntries) {
+    consumer.skip(4);
+
+    entries.push([dataEntry, consumer.read(attributesSize)]);
   }
 
   return entries;

@@ -10,6 +10,7 @@
     "dist"
   ],
   "exports": {
+    ".": "./dist/index.js",
     "./Rebuilder": "./dist/Rebuilder.js",
     "./Transpile": "./dist/Transpile.js"
   },
