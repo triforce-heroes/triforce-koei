@@ -1,14 +1,8 @@
 import { BufferConsumer } from "@triforce-heroes/triforce-core/BufferConsumer";
-import { fatal } from "@triforce-heroes/triforce-core/Console";
 
 import { Entry } from "./types/Entry.js";
-import { validate } from "./utils/validate.js";
 
 export function transpile(buffer: Buffer) {
-  if (!validate(buffer)) {
-    fatal("invalid KOEI file");
-  }
-
   const consumer = new BufferConsumer(buffer);
 
   const entries: Entry[] = [];
