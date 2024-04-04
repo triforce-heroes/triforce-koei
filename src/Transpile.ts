@@ -1,10 +1,11 @@
 import { BufferConsumer } from "@triforce-heroes/triforce-core/BufferConsumer";
 
-import { Entry } from "./types/Entry.js";
+import { Entry, EntryContainer } from "./types/Entry.js";
 
-export function transpile(buffer: Buffer): Entry[] {
-  const consumer = new BufferConsumer(buffer, 4);
+export function transpile(buffer: Buffer): EntryContainer {
+  const consumer = new BufferConsumer(buffer);
 
+  const dataHeader = consumer.readUnsignedInt32();
   const dataSize = consumer.readUnsignedInt32();
   const dataEntries: string[] = [];
 
@@ -18,7 +19,7 @@ export function transpile(buffer: Buffer): Entry[] {
     (buffer.length - dataSize - 16) / dataEntries.length - 4;
 
   if (attributesSize === 0) {
-    return dataEntries.map((entry) => [entry]);
+    return [dataHeader, dataEntries.map((entry) => [entry])];
   }
 
   consumer.seek(16);
@@ -31,5 +32,5 @@ export function transpile(buffer: Buffer): Entry[] {
     entries.push([dataEntry, consumer.read(attributesSize)]);
   }
 
-  return entries;
+  return [dataHeader, entries];
 }

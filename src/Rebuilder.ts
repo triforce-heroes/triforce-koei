@@ -2,7 +2,7 @@ import { BufferBuilder } from "@triforce-heroes/triforce-core/BufferBuilder";
 
 import { Entry } from "./types/Entry.js";
 
-export function rebuild(entries: Entry[]) {
+export function rebuild(entries: Entry[], size: number) {
   const entrySample = entries[0]!;
   const [, entrySampleAttribute] = entrySample;
 
@@ -24,7 +24,7 @@ export function rebuild(entries: Entry[]) {
 
   const header = new BufferBuilder();
 
-  header.writeUnsignedInt32(entries.length);
+  header.writeUnsignedInt32(size);
   header.writeUnsignedInt32(data.length);
   header.pad(16);
 
