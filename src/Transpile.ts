@@ -40,7 +40,7 @@ export function transpile(buffer: Buffer): EntryContainer {
       entryPush();
 
       dataOffsetEntry = dataConsumer.readNullTerminatedString();
-      dataOffset += dataOffsetEntry.length + 1;
+      dataOffset += Buffer.from(dataOffsetEntry, "utf8").length + 1;
     } else {
       dataOffsetBuffer.writeUnsignedInt32(consumerSection);
     }

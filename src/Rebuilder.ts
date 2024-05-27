@@ -18,7 +18,7 @@ export function rebuild(entries: Entry[], size: number) {
     offsets.writeUnsignedInt32(offset);
 
     offset +=
-      entry.length +
+      Buffer.from(entry, "utf8").length +
       1 - // Null terminator.
       4; // Offset length.
 

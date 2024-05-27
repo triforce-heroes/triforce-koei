@@ -87,6 +87,7 @@ describe("transpile", () => {
         ],
       ],
     ],
+    ["sample-bug-0005.koei", [2, [["m²"], ["km"]]]],
   ] as const;
 
   it.each(samples)("transpile(%j)", (file, expected) => {

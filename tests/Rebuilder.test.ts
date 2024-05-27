@@ -73,6 +73,7 @@ describe("rebuild", () => {
       4,
       "sample-bug-0004.koei",
     ],
+    [[["m²"], ["km"]], 2, "sample-bug-0005.koei"],
   ] as const;
 
   it.each(samples)("rebuild(%j, %j)", (entries, size, expected) => {
