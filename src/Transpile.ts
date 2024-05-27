@@ -1,36 +1,54 @@
+import { BufferBuilder } from "@triforce-heroes/triforce-core/BufferBuilder";
 import { BufferConsumer } from "@triforce-heroes/triforce-core/BufferConsumer";
 
 import { Entry, EntryContainer } from "./types/Entry.js";
 
 export function transpile(buffer: Buffer): EntryContainer {
+  const entries: Entry[] = [];
+
   const consumer = new BufferConsumer(buffer);
 
   const dataHeader = consumer.readUnsignedInt32();
   const dataSize = consumer.readUnsignedInt32();
-  const dataEntries: string[] = [];
+  let dataOffset = buffer.length - dataSize - 16;
 
-  consumer.seek(buffer.length - dataSize);
+  const offsetsConsumer = consumer.skip(8).consumer(dataOffset);
 
-  while (!consumer.isConsumed()) {
-    dataEntries.push(consumer.readNullTerminatedString());
+  let dataOffsetEntry: string | null = null;
+  let dataOffsetBuffer = new BufferBuilder();
+
+  const dataConsumer = new BufferConsumer(buffer, dataOffset + 16);
+
+  function entryPush() {
+    if (dataOffsetEntry !== null) {
+      if (dataOffsetBuffer.length > 0) {
+        entries.push([dataOffsetEntry, dataOffsetBuffer.build()]);
+
+        dataOffsetBuffer = new BufferBuilder();
+      } else {
+        entries.push([dataOffsetEntry]);
+      }
+
+      dataOffsetEntry = null;
+    }
   }
 
-  const attributesSize =
-    (buffer.length - dataSize - 16) / dataEntries.length - 4;
+  while (!offsetsConsumer.isConsumed()) {
+    const consumerSection = offsetsConsumer.readUnsignedInt32();
 
-  if (attributesSize === 0) {
-    return [dataHeader, dataEntries.map((entry) => [entry])];
+    if (consumerSection === dataOffset) {
+      entryPush();
+
+      dataOffsetEntry = dataConsumer.readNullTerminatedString();
+      dataOffset += dataOffsetEntry.length + 1;
+    } else {
+      dataOffsetBuffer.writeUnsignedInt32(consumerSection);
+    }
+
+    dataOffset -= 4;
   }
 
-  consumer.seek(16);
-
-  const entries: Entry[] = [];
-
-  for (const dataEntry of dataEntries) {
-    consumer.skip(4);
-
-    entries.push([dataEntry, consumer.read(attributesSize)]);
-  }
+  entryPush();
 
   return [dataHeader, entries];
 }
